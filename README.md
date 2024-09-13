@@ -28,7 +28,7 @@ The system is divided into three milestones, each building upon the previous:
 
 1. Clone the repository:
 
-   git clone https://github.com/YourGitHubUsername/vet-clinic-appointment-system.git
+   git clone git@github.com:majidseifi/vet-clinic-management-system.git
 
 2. Compile the project using the gcc compiler:
 
