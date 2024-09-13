@@ -65,5 +65,6 @@ Debug/
 *.app
 
 # Custom files
+*.xcodeproj
 *.vscode
 *.DS_Store
