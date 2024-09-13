@@ -21,7 +21,7 @@ The system is divided into three milestones, each building upon the previous:
 
 - **core.h / core.c**: Contains core utility functions for input handling and other general operations.
 - **clinic.h / clinic.c**: Contains functions related to patient and appointment management.
-- **a1ms1.c, a1ms2.c, main.c**: Main files for each milestone, implementing testing and validation for the corresponding module.
+- **main.c:** Main file, implementing testing and validation for the corresponding module.
 - **patientData.txt / appointmentData.txt**: Sample text files used for importing patient and appointment data.
 
 ## How to Run
