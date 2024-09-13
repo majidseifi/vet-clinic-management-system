@@ -32,11 +32,11 @@ The system is divided into three milestones, each building upon the previous:
 
 2. Compile the project using the gcc compiler:
 
-  gcc -Wall a1ms3.c core.c clinic.c -o vet_clinic
+   gcc -Wall a1ms3.c core.c clinic.c -o vet_clinic
 
 3. Run the executable:
 
-  ./vet_clinic
+   ./vet_clinic
 
 4. Follow the on-screen instructions to manage patients and appointments.
 
