@@ -369,10 +369,10 @@ void removePatient(struct Patient patient[], int max)
 //                clearInputBuffer();
             }
             else if ((character == 'y' || character == 'Y') && (lastChar == '\n')) {
-                strcpy(patient[exist].name, "\0"); // set name to NULL
-                patient[exist].patientNumber = '\0'; // set patient number to NULL
-                strcpy(patient[exist].phone.description, "\0"); // set phone description to NULL
-                strcpy(patient[exist].phone.number, "\0"); // set phone number to NULL
+                patient[exist].name[0] = '\0'; // set name to NULL
+                patient[exist].patientNumber = 0; // set patient number to NULL
+                patient[exist].phone.description[0] = '\0'; // set phone description to NULL
+                patient[exist].phone.number[0] = '\0'; // set phone number to NULL
                 printf("Patient record has been removed!\n\n"); // show success message
                 flag = 0;
             }
@@ -626,9 +626,9 @@ int findPatientIndexByPatientNum(int patientNumber, const struct Patient patient
 void SortPatients(struct Patient* patients, int max)
 {
     int i, j;
-    for (i = 0; i < max; i++)
+    for (i = 0; i < max - 1; i++)
     {
-        for (j = 0; j < max - i; j++)
+        for (j = 0; j < max - 1 - i; j++)
         {
             if (patients[j].patientNumber > patients[j + 1].patientNumber)
             {
@@ -646,48 +646,50 @@ void SortAppoints(struct Appointment appoints[], int max)
 {
     int i, j;
     struct Appointment temp;
-    for (i = 0; i < max; i++)
+    for (i = 0; i < max - 1; i++)
     {
-        for (j = 0; j < max - i; j++)
+        for (j = 0; j < max - 1 - i; j++)
         {
-            if (appoints[j].date.year > appoints[j + 1].date.year)
-            {
-                temp = appoints[j];
-                appoints[j] = appoints[j + 1];
-                appoints[j + 1] = temp;
-            }
-            else if (appoints[j].date.year == appoints[j + 1].date.year)
-            {
-                if (appoints[j].date.month > appoints[j + 1].date.month)
+            if (appoints[j].patientNumber != 0 && appoints[j + 1].patientNumber != 0){
+                if (appoints[j].date.year > appoints[j + 1].date.year)
                 {
                     temp = appoints[j];
                     appoints[j] = appoints[j + 1];
                     appoints[j + 1] = temp;
                 }
-                else if (appoints[j].date.month == appoints[j + 1].date.month)
+                else if (appoints[j].date.year == appoints[j + 1].date.year)
                 {
-                    if (appoints[j].date.day > appoints[j + 1].date.day)
+                    if (appoints[j].date.month > appoints[j + 1].date.month)
                     {
                         temp = appoints[j];
                         appoints[j] = appoints[j + 1];
                         appoints[j + 1] = temp;
                     }
-                    else if (appoints[j].date.day == appoints[j + 1].date.day)
+                    else if (appoints[j].date.month == appoints[j + 1].date.month)
                     {
-                        if (appoints[j].time.hour > appoints[j + 1].time.hour)
+                        if (appoints[j].date.day > appoints[j + 1].date.day)
                         {
                             temp = appoints[j];
                             appoints[j] = appoints[j + 1];
                             appoints[j + 1] = temp;
                         }
-                        else if (appoints[j].time.hour == appoints[j + 1].time.hour)
+                        else if (appoints[j].date.day == appoints[j + 1].date.day)
                         {
-                            if (appoints[j].time.min > appoints[j + 1].time.min)
+                            if (appoints[j].time.hour > appoints[j + 1].time.hour)
                             {
                                 temp = appoints[j];
                                 appoints[j] = appoints[j + 1];
                                 appoints[j + 1] = temp;
-                                
+                            }
+                            else if (appoints[j].time.hour == appoints[j + 1].time.hour)
+                            {
+                                if (appoints[j].time.min > appoints[j + 1].time.min)
+                                {
+                                    temp = appoints[j];
+                                    appoints[j] = appoints[j + 1];
+                                    appoints[j + 1] = temp;
+                                    
+                                }
                             }
                         }
                     }
@@ -797,10 +799,10 @@ int getPatientNumber (const struct Patient* patient, int max)
 // Find Next Available Array Index for Appointment
 int nextAppointIndex(const struct Appointment* appoint, int max)
 {
-    int i, result = 0;
+    int i, result = -1;
     
-    for (i = 0; i < max; i++) {
-        if (appoint[i].patientNumber == result)
+    for (i = 0; i < max && result == -1; i++) {
+        if (appoint[i].patientNumber == 0)
         {
             result = i;
         }
@@ -883,8 +885,11 @@ int importPatients(const char* datafile, struct Patient patients[], int max)
     if (fp != NULL)
     {
         
-        while (fscanf(fp, "%d|%[^|]|%[^|]|%10[^\n]", &patients[i].patientNumber, patients[i].name, patients[i].phone.description, patients[i].phone.number) != EOF && i < max) //untill there is patient to scan
+        while (i < max && fscanf(fp, "%d|%[^|]|%[^|]|%10[^\n]", &patients[i].patientNumber, patients[i].name, patients[i].phone.description, patients[i].phone.number) != EOF) //untill there is patient to scan
         {
+            patients[i].name[NAME_LEN - 1] = '\0';
+            patients[i].phone.description[PHONE_DESC_LEN] = '\0';
+            patients[i].phone.number[PHONE_LEN] = '\0';
             i++;
         }
     }
@@ -918,6 +923,6 @@ int importAppointments(const char* datafile, struct Appointment appoints[], int 
         printf("File Not Found!");
         i = -1;
     }
-    fclose(fp);
+    if (fp) fclose(fp);
     return i;
 }
